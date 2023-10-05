@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const user = require('../models/user')
 
 function isStringInvalid(string){
@@ -8,18 +9,17 @@ function isStringInvalid(string){
     }
 }
 
-exports.getUser=(req,res,next)=>{
-    user.findAll().then(users=>{
-        res.send(users);
-    }).catch(err=>{
-        console.log(err)
-    });
+exports.getUser=async (req,res,next)=>{
+    try{
+        var result = await user.findAll();
+        res.json(result);
+    }catch(err){
+        console.log(err);
+    }
 }
 
 exports.addUser= async (req,res,next)=>{
-    try{
-
-    
+    try{   
     console.log(req.body)
 
     if(isStringInvalid(req.body.username) || isStringInvalid(req.body.email)||isStringInvalid(req.body.password)){
@@ -40,6 +40,21 @@ exports.addUser= async (req,res,next)=>{
     }
 
 
+}
+
+exports.postSignIn = async (req,res,next)=>{
+    try{
+        console.log(req.body)
+        var result = await user.findAll({where:{email:req.body.email}})
+        if(result == undefined || result.length ===0){
+            res.json({err:"User doesnt exist"})
+        }else{
+            res.status(201).json({userdetail:result.dataValues})
+        }
+        console.log(result)
+    }catch (err){
+    
+    }
 }
 
 exports.deleteUser=(req,res,next)=>{
