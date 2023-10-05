@@ -44,14 +44,16 @@ exports.addUser= async (req,res,next)=>{
 
 exports.postSignIn = async (req,res,next)=>{
     try{
-        console.log(req.body)
+        //console.log(req.body)
         var result = await user.findAll({where:{email:req.body.email}})
-        if(result == undefined || result.length ===0){
-            res.json({err:"User doesnt exist"})
-        }else{
-            res.status(201).json({userdetail:result.dataValues})
+        if( result==undefined || result.length===0){
+            return res.status(400).json({err:"User doesnt exist"})
+        }else if(result[0].dataValues.password !=req.body.password){
+            return res.status(401).json({err: "Incorrect Password"})
+        } else{
+            res.status(201).json({userdetail:result[0].dataValues})
         }
-        console.log(result)
+        //console.log(result[0].dataValues)
     }catch (err){
     
     }

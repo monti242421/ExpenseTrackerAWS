@@ -46,11 +46,16 @@ async function signin(e){
     try{
 
     var res = await axios.post("http://localhost:4000/user/signin",myobj)
-        console.log(res);
+        console.log(JSON.stringify(res));
+        if(res.status == 201){
+            alert("login");
+        }
+        //signinform.appendChild(document.createTextNode(JSON.stringify(res)))
     }         
     catch(err){
-          console.log(err)
-        //  form.appendChild(document.createTextNode(err))         
+        console.log(err)
+          console.log(err.response.data[0])
+          signinform.appendChild(document.createTextNode(err))         
     };
 }
 
