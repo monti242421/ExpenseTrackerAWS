@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>SignUp</title>
 </head>
 <body>
-    <form action="">
+    <form action="" id="mainform">
         <label for="">User Name</label>
-        <input type="text" required>
+        <input type="text" id="username" required>
         <label for="">Email id</label>
-        <input type="email" name="" id="" required>
+        <input type="email" name="" id="email" required>
         <label for="">Password</label>
-        <input type="password" required>
+        <input type="password" id="password" required>
         <button type="submit">Sign Up</button>
     </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
