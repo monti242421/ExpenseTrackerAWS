@@ -28,7 +28,7 @@ async function  signUp(e){
     }         
     catch(err){
           console.log(err)
-          form.appendChild(document.createTextNode(err))         
+          signupForm.appendChild(document.createTextNode(err))         
     };
     
 }
@@ -46,9 +46,11 @@ async function signin(e){
     try{
 
     var res = await axios.post("http://localhost:4000/user/signin",myobj)
-        console.log(JSON.stringify(res));
+        
         if(res.status == 201){
             alert("Successfully Logged in");
+            console.log(JSON.stringify(res));
+            localStorage.setItem('token',res.data.token);
             window.location= 'http://127.0.0.1:5500/Web%20Dev%20Projects/Expense%20Tracker%20AWS%20app/index/index.html?';
         }
         //signinform.appendChild(document.createTextNode(JSON.stringify(res)))
