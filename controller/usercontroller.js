@@ -1,5 +1,6 @@
 const { where } = require('sequelize');
 const user = require('../models/user')
+const bcrypt = require('bcrypt');
 
 function isStringInvalid(string){
     if(string ==undefined || string.length===0){
@@ -25,14 +26,19 @@ exports.addUser= async (req,res,next)=>{
     if(isStringInvalid(req.body.username) || isStringInvalid(req.body.email)||isStringInvalid(req.body.password)){
         return res.status(400).json({err:"Bad Parameters, Missing"});
     }
-    var result = await user.create({
-        username:req.body.username,
-        email:req.body.email,
-        password:req.body.password
+    const saltrounds=10;
+    bcrypt.hash(req.body.password,saltrounds,async (err,hash)=>{
+        console.log(err);
+        await user.create({
+            username:req.body.username,
+            email:req.body.email,
+            password:hash
+        })
+       // console.log(result.dataValues)
+        res.status(201).json({message:'successfully created new user'});
+
     })
-        console.log(result.dataValues)
-        res.status(201).json({newUserDetail: result.dataValues});
-    
+        
     }
     catch(err){
         console.log(err)
@@ -45,17 +51,29 @@ exports.addUser= async (req,res,next)=>{
 exports.postSignIn = async (req,res,next)=>{
     try{
         //console.log(req.body)
-        var result = await user.findAll({where:{email:req.body.email}})
-        if( result==undefined || result.length===0){
-            return res.status(400).json({err:"User doesnt exist"})
-        }else if(result[0].dataValues.password !=req.body.password){
-            return res.status(401).json({err: "Incorrect Password"})
-        } else{
-            res.status(201).json({userdetail:result[0].dataValues})
+        if(isStringInvalid(req.body.email)||isStringInvalid(req.body.password)){
+            return res.status(400).json({err:"Bad Parameters, Missing"});
         }
+
+        var result = await user.findAll({where:{email:req.body.email}})
+        if( result.length>0){
+            bcrypt.compare(req.body.password,result[0].dataValues.password,(err,resultPass)=>{
+                if(err){
+                    throw new Error("Something Went Wrong");
+                }
+                if(resultPass===true){
+                    res.status(201).json({userdetail:result[0].dataValues})
+                } else{
+                    return res.status(400).json({err: "Incorrect Password"})
+                }
+            })
+        }else{
+            return res.status(404).json({err:"User doesnt exist"})
+        }
+            
         //console.log(result[0].dataValues)
     }catch (err){
-    
+        res.status(500).send(err);
     }
 }
 
