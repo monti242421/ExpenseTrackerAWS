@@ -1,5 +1,6 @@
 const { where } = require('sequelize');
 const user = require('../models/user')
+const expenses =require('../models/expenses')
 const bcrypt = require('bcrypt');
 
 function isStringInvalid(string){
@@ -90,4 +91,32 @@ exports.deleteUser=(req,res,next)=>{
         res.status(500).send(err);
     });
 
+}
+exports.getexpense=async(req,res,next)=>{
+    try{
+        var result = await expenses.findAll();
+        res.send(result);
+    }catch(err){
+        console.log(err);
+    }
+
+}
+exports.addexpense=async (req,res,next)=>{
+
+    try{        
+    if(isStringInvalid(req.body.amount) || isStringInvalid(req.body.description)||isStringInvalid(req.body.category)){
+        return res.status(400).json({err:"Bad Parameters, Missing"});
+    }
+        console.log(req.body)
+        var result = await expenses.create({
+            amount:req.body.amount,
+            description:req.body.description,
+            category:req.body.category
+        })
+       // console.log(result.dataValues)
+        res.status(201).json({newexpense:result.dataValues});
+    }catch(err){
+        console.log(err)
+        res.status(500).json(err);
+    }
 }
