@@ -2,6 +2,7 @@ const { where } = require('sequelize');
 const expenses =require('../models/expenses')
 const bcrypt = require('bcrypt');
 const User = require('../models/user')
+const sequelize = require("../util/database");
 
 function isStringInvalid(string){
     if(string ==undefined || string.length===0){
@@ -21,26 +22,27 @@ exports.getexpense=async(req,res,next)=>{
 
 }
 exports.addexpense=async (req,res,next)=>{
-
+    const t = await sequelize.transaction();
     try{        
-    // if(isStringInvalid(req.body.amount) || isStringInvalid(req.body.description)||isStringInvalid(req.body.category)){
-    //     return res.status(400).json({err:"Bad Parameters, Missing"});
-    // }
-        console.log("sds"+req.body)
+        // if(isStringInvalid(req.body.amount) || isStringInvalid(req.body.description)||isStringInvalid(req.body.category)){
+        //     return res.status(400).json({err:"Bad Parameters, Missing"});
+        // }
+        
         var result = await expenses.create({
             amount:req.body.amount,
             description:req.body.description,
             category:req.body.category,
             userId:req.user.dataValues.id
 
-        })
-        const totalExpense = Number(req.user.dataValues.totalExpenses) + Number(req.body.amount);
-        console.log(totalExpense);
+        },{transaction:t})
 
-        await User.update({totalExpenses:totalExpense},{where:{id:req.user.dataValues.id}})
-        console.log(result.dataValues)
+        const totalExpense = Number(req.user.dataValues.totalExpenses) + Number(req.body.amount);
+
+        await User.update({totalExpenses:totalExpense},{where:{id:req.user.dataValues.id},transaction:t})
+        await t.commit();
         res.status(201).json({newexpense:result.dataValues});
     }catch(err){
+        await t.rollback();
         console.log(err)
         res.status(500).json(err);
     }
