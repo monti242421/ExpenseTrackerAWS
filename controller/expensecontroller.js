@@ -1,6 +1,7 @@
 const { where } = require('sequelize');
 const expenses =require('../models/expenses')
 const bcrypt = require('bcrypt');
+const User = require('../models/user')
 
 function isStringInvalid(string){
     if(string ==undefined || string.length===0){
@@ -12,9 +13,7 @@ function isStringInvalid(string){
 
 exports.getexpense=async(req,res,next)=>{
     try{
-        console.log(req.user.dataValues.id);
         var result = await expenses.findAll({where:{userId:req.user.dataValues.id}});
-        //var result = await expenses.findAll();
         res.send(result);
     }catch(err){
         console.log(err);
@@ -35,7 +34,11 @@ exports.addexpense=async (req,res,next)=>{
             userId:req.user.dataValues.id
 
         })
-       // console.log(result.dataValues)
+        const totalExpense = Number(req.user.dataValues.totalExpenses) + Number(req.body.amount);
+        console.log(totalExpense);
+
+        await User.update({totalExpenses:totalExpense},{where:{id:req.user.dataValues.id}})
+        console.log(result.dataValues)
         res.status(201).json({newexpense:result.dataValues});
     }catch(err){
         console.log(err)
