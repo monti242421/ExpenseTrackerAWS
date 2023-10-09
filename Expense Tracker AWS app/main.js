@@ -22,13 +22,13 @@ async function  signUp(e){
     };
     try{
 
-    var res = await axios.post("http://localhost:4000/user/signup",myobj)
+    var res = await axios.post("http://localhost:4000/user/adduser",myobj)
         console.log(res);
        // showDataToScreen(res.data.newBlogDetail)   
     }         
     catch(err){
           console.log(err)
-          form.appendChild(document.createTextNode(err))         
+          signupForm.appendChild(document.createTextNode(err))         
     };
     
 }
@@ -45,10 +45,13 @@ async function signin(e){
     console.log(myobj)
     try{
 
-    var res = await axios.post("http://localhost:4000/user/signin",myobj)
-        console.log(JSON.stringify(res));
+    var res = await axios.post("http://localhost:4000/user/login",myobj)
+        
         if(res.status == 201){
-            alert("login");
+            alert("Successfully Logged in");
+            console.log(JSON.stringify(res));
+            localStorage.setItem('token',res.data.token);
+            window.location= 'http://127.0.0.1:5500/Web%20Dev%20Projects/Expense%20Tracker%20AWS%20app/index/index.html?';
         }
         //signinform.appendChild(document.createTextNode(JSON.stringify(res)))
     }         
@@ -58,6 +61,34 @@ async function signin(e){
           signinform.appendChild(document.createTextNode(err))         
     };
 }
+var forgetpasswordform=document.getElementById('forgetpasswordform');
+
+document.getElementById('forgetpassword').onclick = function(e){
+    e.preventDefault();
+    forgetpasswordform.removeAttribute("hidden"); 
+}
+
+forgetpasswordform.addEventListener('submit',sendmail);
+
+async function sendmail(e){
+        e.preventDefault();
+        var email = document.getElementById("forgetpasswordemail").value;
+        var myobj = {
+            email: email,
+        };
+        try{
+    
+        var res = await axios.post("http://localhost:4000/password/forgotpassword",myobj)
+            console.log(res);  
+        }         
+        catch(err){
+              console.log(err)        
+        };
+ }
+
+
+
+
 
 
 
