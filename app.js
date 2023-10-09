@@ -18,6 +18,7 @@ const premiumRoute = require('./routes/premiumfeatures');
 const user = require('./models/user');
 const expenses = require('./models/expenses');
 const order = require('./models/orders');
+const forgetpassword = require('./models/forgotpassword');
 
 app.use(bodyParser.json({extended:false}));
 
@@ -26,6 +27,9 @@ user.hasMany(expenses);
 
 user.hasMany(order);
 order.belongsTo(user);
+
+user.hasMany(forgetpassword);
+forgetpassword.belongsTo(user);
 
 app.use(userRoute);
 app.use(forgotpasswordRoute);
