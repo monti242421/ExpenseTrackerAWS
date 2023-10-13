@@ -88,9 +88,9 @@ exports.deleteexpense=async (req,res,next)=>{
 }
 
 function uploadToS3(data,filename){
-    const BUCKET_NAME ='expensetrackertarun'
-    const IAM_USER_KEY='AKIA2QD72WFA4ERLY34O'
-    const IAM_USER_SECRET='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'
+    const BUCKET_NAME =''
+    const IAM_USER_KEY=''
+    const IAM_USER_SECRET=''
 
     let s3bucket = new AWS.S3({
         accessKeyId:IAM_USER_KEY,
