@@ -1,14 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const usercontroller = require('../controller/usercontroller');
+const expensecontroller = require('../controller/expensecontroller');
+const userautherization = require('../middleware/auth');
 
-router.get('/user/signup',usercontroller.getUser)
 
-router.post('/user/signup',usercontroller.addUser)
-
-router.get('/user/signin',usercontroller.getUser)
-
-router.post('/user/signin',usercontroller.postSignIn)
+router.post('/user/adduser',usercontroller.addUser)
+router.post('/user/login',usercontroller.login)
+router.get('/user/download',userautherization.authenticate,expensecontroller.downloadexpense)
 
 
 module.exports = router;
