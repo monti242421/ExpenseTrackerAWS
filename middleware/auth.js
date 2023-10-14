@@ -6,8 +6,8 @@ const { use } = require('../routes/user');
 exports.authenticate = async (req,res,next)=>{
     try{
         const token = req.header('Authoriztion')
-        console.log(token);
-        const user = jwt.verify(token,'secretkeyitcanbeanything');
+        //console.log(token);
+        const user = jwt.verify(token,process.env.TOKEN_SECRET);
         result = await User.findByPk(user.userId)
         req.user = result;
         next();

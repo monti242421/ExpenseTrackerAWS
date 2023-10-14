@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user')
 const sequelize = require("../util/database");
 const AWS = require("aws-sdk");
-require('dotenv').config();
+//require('dotenv').config();
 
 function isStringInvalid(string){
     if(string ==undefined || string.length===0){
@@ -25,7 +25,7 @@ exports.getexpense=async(req,res,next)=>{
         }
         //console.log(pagelimit);
         totalItems = await expenses.count();
-        console.log(totalItems)
+        //console.log(totalItems)
         var result = await expenses.findAll({
             where:{userId:req.user.dataValues.id},
             offset:(page-1)*Number(pagelimit),
